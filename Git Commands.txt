@@ -6,3 +6,6 @@
 - git status
 - git checkout <>
 - git commit -m "Note before commiting"
+- git checkout <hash number> ; git checkout main
+- git branch; git branch NewBranchName; git checkout branchName;git checkout -b branchName; git branch -d name; git branch -D name
+- merging: be in the branch to merge to , git merge <branch name>
