@@ -5,3 +5,4 @@
 - git init //creates a git repo
 - git status
 - git checkout <>
+- git commit -m "Note before commiting"
