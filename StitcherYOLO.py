@@ -84,7 +84,6 @@ def main():
     video2 = cv2.VideoCapture("video2.mp4")
     output_video = "outputByYOLO.mp4"
 
-    # Read first frames for homography estimation
     ret1, left_img = video1.read()
     ret2, right_img = video2.read()
 
@@ -92,27 +91,21 @@ def main():
         print("Error: Unable to read initial frames from videos.")
         return
 
-    # Convert to grayscale
     l_img = cv2.cvtColor(left_img, cv2.COLOR_BGR2GRAY)
     r_img = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
 
-    # Detect keypoints and descriptors using SIFT
     sift = cv2.SIFT_create()
     key_points1, descriptor1 = sift.detectAndCompute(l_img, None)
     key_points2, descriptor2 = sift.detectAndCompute(r_img, None)
 
-    # Match keypoints
     good_matches = match_keypoints(key_points1, key_points2, descriptor1, descriptor2)
     points1 = np.float32([[pt[0], pt[1]] for pt in good_matches])
     points2 = np.float32([[pt[2], pt[3]] for pt in good_matches])
 
-    # Compute homography
     final_H, _ = cv2.findHomography(points1, points2, cv2.RANSAC)
 
-    # Stitch first frames for preview
     result_img = stitch_images(left_img, right_img, final_H)
 
-    # Display stitched image
     cv2.imshow("Stitched Preview", result_img)
     cv2.waitKey(3000)  # Show preview for 3 seconds
     cv2.destroyAllWindows()

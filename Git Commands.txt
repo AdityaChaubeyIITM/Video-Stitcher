@@ -1,0 +1,7 @@
+
+- git log
+- git add . or file
+- git clone <link>
+- git init //creates a git repo
+- git status
+- git checkout <>
