@@ -1,0 +1,71 @@
+import cv2
+import os
+
+def stitch_and_save(video1, video2, output_video_path):
+    # Open video files
+    print(f"Opening video 1: {video1}")
+    print(f"Opening video 2: {video2}")
+    
+    cap1 = cv2.VideoCapture(video1)
+    cap2 = cv2.VideoCapture(video2)
+
+    if not cap1.isOpened():
+        print(f"Error: Cannot open {video1}. Please check the file path and try again.")
+        return
+
+    if not cap2.isOpened():
+        print(f"Error: Cannot open {video2}. Please check the file path and try again.")
+        return
+
+    # Read the first frame from each video
+    ret1, frame1 = cap1.read()
+    ret2, frame2 = cap2.read()
+
+    if not ret1:
+        print(f"Error: Cannot read frames from {video1}")
+        cap1.release()
+        cap2.release()
+        return
+
+    if not ret2:
+        print(f"Error: Cannot read frames from {video2}")
+        cap1.release()
+        cap2.release()
+        return
+
+    # Get the size of the frames
+    frame_height = frame1.shape[0]
+    frame_width = frame1.shape[1]
+
+    # Create a VideoWriter to save the stitched output
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for MP4 format
+    out = cv2.VideoWriter(output_video_path, fourcc, 30.0, (frame_width * 2, frame_height))
+
+    print("Processing Homography Matrix...")
+
+    # For simplicity, we'll just stitch the two frames horizontally
+    # You can implement homography or more complex stitching logic here
+    stitched_frame = cv2.hconcat([frame1, frame2])
+
+    # Write the stitched frame to the output video
+    out.write(stitched_frame)
+
+    # Release the video writer and capture objects
+    cap1.release()
+    cap2.release()
+    out.release()
+
+    print(f"Stitched video saved to {output_video_path}")
+    
+    # Open the saved video
+    if os.path.exists(output_video_path):
+        os.startfile(output_video_path)
+    else:
+        print(f"Error: Failed to save {output_video_path}")
+
+# Use absolute paths for your videos
+video1 = "video1.mp4"
+video2 = "video2.mp4"
+output_video_path = "stitched_output.mp4"
+
+stitch_and_save(video1, video2, output_video_path)
